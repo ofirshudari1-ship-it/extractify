@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>SnapTable OCR – pipeline test harness</title>
+<style>
+  body { font-family: monospace; padding: 20px; white-space: pre-wrap; }
+  #result { border: 2px solid #999; padding: 12px; margin-top: 12px; }
+  .pass { border-color: green; background: #eaffea; }
+  .fail { border-color: red; background: #ffeaea; }
+  canvas { border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+<h3>SnapTable OCR pipeline test (dev tool — not part of the shipped extension)</h3>
+<p>
+  Serves the real <code>src/shared/tesseract.min.js</code> +
+  <code>src/shared/snaptable-ocr.js</code> files unmodified, with a tiny
+  shim for <code>chrome.runtime.getURL</code> so they resolve paths against
+  this static server instead of a chrome-extension:// origin. Run with:
+  <br /><code>python -m http.server 8850 --directory "&lt;path to SnapTable-OCR&gt;"</code>
+  <br />then open <code>http://localhost:8850/tests/harness.html</code>.
+</p>
+<div>Test image (what gets OCR'd):</div>
+<canvas id="cv" width="480" height="70"></canvas>
+<div id="status">idle</div>
+<div id="result"></div>
+
+<script>
+  // Path is one level up from here (tests/) to the project root.
+  window.chrome = {
+    runtime: {
+      getURL(path) { return new URL("../" + path, location.href).href; },
+    },
+  };
+</script>
+<script src="../src/shared/tesseract.min.js"></script>
+<script src="../src/shared/snaptable-ocr.js"></script>
+<script>
+  const statusEl = document.getElementById("status");
+  const resultEl = document.getElementById("result");
+
+  function drawTestImage() {
+    const canvas = document.getElementById("cv");
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#000000";
+    ctx.font = "bold 34px Arial, sans-serif";
+    ctx.textBaseline = "middle";
+    // Two number groups with a wide gap: digits OCR reliably regardless of
+    // which language pack is loaded, and the gap exercises the same
+    // column-detection heuristic used on real tables.
+    ctx.fillText("4217", 20, 38);
+    ctx.fillText("9080", 300, 38);
+    return canvas.toDataURL("image/png");
+  }
+
+  async function run() {
+    const t0 = performance.now();
+    let worker;
+    try {
+      statusEl.textContent = "creating worker...";
+      worker = await SnapTableOCR.createOcrWorker(["heb", "eng"], (m) => {
+        statusEl.textContent = `${m.status || ""} ${Math.round((m.progress || 0) * 100)}%`;
+        console.log("[progress]", JSON.stringify(m));
+      });
+
+      const imgUrl = drawTestImage();
+      statusEl.textContent = "recognizing...";
+      const { data } = await worker.recognize(imgUrl, {}, { text: true, blocks: true });
+      const tsvResult = SnapTableOCR.buildTsv(data, "normal");
+      const elapsed = Math.round(performance.now() - t0);
+
+      const rawText = (data.text || "").replace(/\s+/g, " ").trim();
+      const pass = rawText.includes("4217") && rawText.includes("9080");
+      const colsOk = tsvResult.isTable && tsvResult.colCount >= 2;
+
+      const summary = {
+        PASS: pass,
+        elapsedMs: elapsed,
+        rawText,
+        tsvIsTable: tsvResult.isTable,
+        tsvColCount: tsvResult.colCount,
+        tsvRowCount: tsvResult.rowCount,
+        tsvText: tsvResult.text,
+        blocksLength: (data.blocks || []).length,
+      };
+      console.log("SNAPTABLE_TEST_RESULT", JSON.stringify(summary));
+      resultEl.className = pass ? "pass" : "fail";
+      resultEl.textContent = "RESULT:\n" + JSON.stringify(summary, null, 2);
+      statusEl.textContent = pass ? "PASS" : "FAIL (see result)";
+    } catch (err) {
+      const elapsed = Math.round(performance.now() - t0);
+      console.error("SNAPTABLE_TEST_ERROR", err);
+      resultEl.className = "fail";
+      resultEl.textContent = "ERROR after " + elapsed + "ms:\n" + (err && err.stack || err);
+      statusEl.textContent = "ERROR";
+    } finally {
+      if (worker) { try { await worker.terminate(); } catch (_) {} }
+    }
+  }
+
+  run();
+</script>
+</body>
+</html>

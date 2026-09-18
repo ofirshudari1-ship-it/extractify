@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Extractify Settings</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <header>
+    <img src="../../assets/icons/icon48.png" alt="" />
+    <div class="header-text">
+      <h1>Extractify</h1>
+      <p class="subtitle" id="subtitle-version">Screenshot → Text / Table</p>
+    </div>
+    <div class="lang-toggle" role="group" aria-label="Interface language">
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="he">עב</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="update-banner" class="update-banner" hidden>
+      <span id="update-banner-text"></span>
+      <button type="button" id="update-banner-close" aria-label="Dismiss">✕</button>
+    </div>
+
+    <section class="card">
+      <h2 data-i18n="secOcrLangTitle">OCR Recognition Languages</h2>
+      <p class="hint" data-i18n="secOcrLangHint">Pick the languages that appear in the areas you'll capture.</p>
+      <label class="checkbox-row">
+        <input type="checkbox" id="lang-heb" />
+        <span data-i18n="langCheckHeb">Hebrew</span>
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" id="lang-eng" />
+        <span data-i18n="langCheckEng">English</span>
+      </label>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="secSensitivityTitle">Column Sensitivity</h2>
+      <p class="hint" data-i18n="secSensitivityHint">Controls how wide a gap must be to count as a new column.</p>
+      <div class="radio-group">
+        <label class="radio-row">
+          <input type="radio" name="sensitivity" value="loose" />
+          <span data-i18n="sensitivityLooseDesc">Loose</span>
+        </label>
+        <label class="radio-row">
+          <input type="radio" name="sensitivity" value="normal" />
+          <span data-i18n="sensitivityNormalDesc">Normal (recommended)</span>
+        </label>
+        <label class="radio-row">
+          <input type="radio" name="sensitivity" value="tight" />
+          <span data-i18n="sensitivityTightDesc">Tight</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="secBehaviorTitle">Behavior</h2>
+      <p class="hint" data-i18n="secBehaviorHint">Fine-tune what happens right after a capture finishes recognizing.</p>
+      <label class="checkbox-row">
+        <input type="checkbox" id="auto-copy" />
+        <span data-i18n="autoCopyLabel">Automatically copy the result as a table when recognition finishes</span>
+      </label>
+      <p class="hint" data-i18n="autoCopyHint">Skips the extra click on "Copy as Table".</p>
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="remember-regions" />
+        <span data-i18n="rememberRegionsLabel">Remember the last capture area per website</span>
+      </label>
+      <p class="hint" data-i18n="rememberRegionsHint">Press Enter right after starting a capture to reuse the last area on that site.</p>
+      <button type="button" id="clear-regions-btn" class="secondary-btn">Clear saved areas</button>
+      <span id="clear-regions-status" class="save-status-inline"></span>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="secSecurityTitle">Security &amp; Privacy</h2>
+      <p class="hint" data-i18n="secSecurityIntro">Extractify uses an on-device AI engine.</p>
+      <p class="hint" data-i18n="secSecurityDataNote">Your settings are saved only on this device.</p>
+      <details class="perms-details">
+        <summary data-i18n="secSecurityPermsTitle">Why does it need these permissions?</summary>
+        <dl class="perms-list">
+          <dt data-i18n="permActiveTabName">activeTab</dt>
+          <dd data-i18n="permActiveTabWhy">…</dd>
+          <dt data-i18n="permScriptingName">scripting</dt>
+          <dd data-i18n="permScriptingWhy">…</dd>
+          <dt data-i18n="permStorageName">storage</dt>
+          <dd data-i18n="permStorageWhy">…</dd>
+          <dt data-i18n="permClipboardName">clipboardWrite</dt>
+          <dd data-i18n="permClipboardWhy">…</dd>
+          <dt data-i18n="permContextMenusName">contextMenus</dt>
+          <dd data-i18n="permContextMenusWhy">…</dd>
+          <dt data-i18n="permOffscreenName">offscreen</dt>
+          <dd data-i18n="permOffscreenWhy">…</dd>
+          <dt data-i18n="permHostName">Access to all websites</dt>
+          <dd data-i18n="permHostWhy">…</dd>
+        </dl>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="secTestTitle">Test OCR Engine</h2>
+      <p class="hint" data-i18n="secTestHint">Runs real OCR on a built-in test image.</p>
+      <button id="test-btn" class="secondary-btn" data-i18n="testBtn">Run Test</button>
+      <div id="test-result" class="test-result" hidden></div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="secShortcutTitle">Keyboard Shortcut &amp; Right-Click</h2>
+      <p class="hint" id="shortcut-hint">Default is <kbd>Ctrl+Shift+K</kbd>.</p>
+      <ul class="trigger-list">
+        <li><span class="trigger-icon">🖱️</span> <span data-i18n="triggerToolbar">Click the toolbar icon</span></li>
+        <li><span class="trigger-icon">⌨️</span> <span><kbd>Ctrl+Shift+K</kbd> / <kbd>⌘+Shift+K</kbd></span></li>
+        <li><span class="trigger-icon">🖱️</span> <span data-i18n="triggerRightClick">Right-click anywhere → "Capture Area"</span></li>
+        <li><span class="trigger-icon">🖼️</span> <span data-i18n="triggerRightClickImage">Right-click an image → "Extract Table from This Image"</span></li>
+      </ul>
+      <a
+        id="shortcuts-link"
+        class="link-btn"
+        href="chrome://extensions/shortcuts"
+        target="_blank"
+        rel="noopener"
+        data-i18n="shortcutLinkBtn"
+        >Open keyboard shortcut settings</a
+      >
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="secHelpTitle">Help &amp; FAQ</h2>
+      <div class="faq">
+        <details>
+          <summary data-i18n="faqQ1">The recognized text has mistakes — is that normal?</summary>
+          <p data-i18n="faqA1">Yes, OCR is never 100% perfect.</p>
+        </details>
+        <details>
+          <summary data-i18n="faqQ2">Columns are merged, or split into too many.</summary>
+          <p data-i18n="faqA2">Adjust Column Sensitivity above.</p>
+        </details>
+        <details>
+          <summary data-i18n="faqQ3">Nothing happens when I click the toolbar icon.</summary>
+          <p data-i18n="faqA3">Extractify can't run on chrome:// pages.</p>
+        </details>
+        <details>
+          <summary data-i18n="faqQ4">"Copy" doesn't seem to do anything.</summary>
+          <p data-i18n="faqA4">Some pages restrict clipboard access.</p>
+        </details>
+        <details>
+          <summary data-i18n="faqQ5">How do I update to a newer version?</summary>
+          <p data-i18n="faqA5">Extract the new ZIP over the existing folder.</p>
+        </details>
+        <details>
+          <summary data-i18n="faqQ6">Does anything leave my computer?</summary>
+          <p data-i18n="faqA6">No, everything runs offline.</p>
+        </details>
+        <details>
+          <summary data-i18n="faqQ7">Why does it need access to every website, and an "offscreen" permission?</summary>
+          <p data-i18n="faqA7">Some sites block the OCR engine from starting directly on the page.</p>
+        </details>
+        <details>
+          <summary data-i18n="faqQ8">Why did it copy something without me clicking Copy?</summary>
+          <p data-i18n="faqA8">You turned on auto-copy under Behavior above.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="secAboutTitle">About</h2>
+      <p class="hint" id="about-version">Version …</p>
+      <p class="hint" data-i18n="aboutPrivacy">Extractify runs 100% offline.</p>
+    </section>
+
+    <div class="save-row">
+      <button id="save-btn" class="primary-btn" data-i18n="saveBtn">Save</button>
+      <button id="reset-btn" class="secondary-btn" data-i18n="resetBtn">Reset to Defaults</button>
+      <span id="save-status"></span>
+    </div>
+  </main>
+
+  <script src="../shared/extractify-i18n.js"></script>
+  <script src="../shared/tesseract.min.js"></script>
+  <script src="../shared/snaptable-ocr.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
