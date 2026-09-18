@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "Extractify",
+    "description": "Extension name shown in chrome://extensions, the toolbar tooltip, and the Chrome Web Store."
+  },
+  "extShortName": {
+    "message": "Extractify",
+    "description": "Short name shown where space is limited (e.g. toolbar overflow menu)."
+  },
+  "extDescription": {
+    "message": "AI-powered, fully offline OCR: select any area of your screen or an image, extract the text, and paste it as a real table into Excel or Google Sheets.",
+    "description": "Extension description shown in chrome://extensions and the Chrome Web Store listing."
+  },
+  "actionTitle": {
+    "message": "Extractify – click to capture an area",
+    "description": "Tooltip shown when hovering the toolbar icon."
+  },
+  "commandDescription": {
+    "message": "Capture an area and convert to a table",
+    "description": "Shown on chrome://extensions/shortcuts next to the keyboard shortcut."
+  }
+}

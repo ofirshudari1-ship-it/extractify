@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Extractify OCR (offscreen)</title>
+</head>
+<body>
+  <!-- This page is never shown to the user. It exists purely so Tesseract.js
+       can create its Worker under the EXTENSION's own CSP
+       (chrome-extension://...) instead of the CSP of whatever web page the
+       user is capturing from. A content-script-created Worker is bound to
+       the host page's CSP even though the script itself is an isolated
+       world - offscreen documents are the officially recommended MV3 escape
+       hatch for exactly this class of problem. -->
+  <script src="../shared/tesseract.min.js"></script>
+  <script src="../shared/snaptable-ocr.js"></script>
+  <script src="offscreen.js"></script>
+</body>
+</html>

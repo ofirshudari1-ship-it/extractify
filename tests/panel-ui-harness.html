@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Extractify panel UI test harness</title>
+<link rel="stylesheet" href="../src/content/overlay.css" />
+<style>
+  body { font-family: sans-serif; padding: 40px; }
+  #log { position: fixed; bottom: 0; left: 0; right: 0; background: #111; color: #0f0;
+         font-family: monospace; font-size: 12px; padding: 8px; max-height: 160px; overflow: auto; }
+</style>
+</head>
+<body>
+<h2>Dummy page content (drag anywhere below to select)</h2>
+<p>Lorem ipsum dolor sit amet, some fake page text to select over.</p>
+<div id="log"></div>
+
+<script>
+  const log = (...args) => {
+    const el = document.getElementById('log');
+    el.textContent += args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ') + '\n';
+    el.scrollTop = el.scrollHeight;
+  };
+
+  // Minimal chrome shim: enough for content.js to run standalone.
+  let settings = { uiLang: 'en', languages: ['heb', 'eng'], columnSensitivity: 'normal', autoCopy: false };
+  const messageListeners = [];
+  window.chrome = {
+    runtime: {
+      getURL: (p) => new URL('../' + p, location.href).href,
+      onMessage: { addListener: (fn) => messageListeners.push(fn) },
+      sendMessage: (msg, cb) => {
+        log('sendMessage:', msg.type);
+        if (msg.type === 'SNAPTABLE_CAPTURE_VISIBLE') {
+          // 1x1 transparent PNG, just needs to load as an <img>.
+          const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+          setTimeout(() => cb({ ok: true, dataUrl }), 50);
+        } else if (msg.type === 'TABLIFY_RECOGNIZE_REQUEST') {
+          // Simulate a couple of progress pings, then a canned table result.
+          setTimeout(() => messageListeners.forEach(fn => fn({ type: 'SNAPTABLE_PROGRESS', progress: { status: 'recognizing text', progress: 0.5 } })), 100);
+          setTimeout(() => cb({ ok: true, result: { text: 'Name\tScore\nAlice\t95\nBob|Co\t80', isTable: true, rowCount: 3, colCount: 2 } }), 300);
+        }
+      },
+    },
+    storage: {
+      local: {
+        get: (keys, cb) => cb({ settings }),
+        set: (obj, cb) => { settings = obj.settings; cb && cb(); },
+      },
+    },
+  };
+
+  // Mock clipboard so copy buttons don't need a secure context.
+  Object.defineProperty(navigator, 'clipboard', {
+    value: { writeText: (t) => { log('clipboard.writeText length=', t.length); return Promise.resolve(); } },
+    configurable: true,
+  });
+</script>
+<script src="../src/shared/extractify-i18n.js"></script>
+<script src="../src/content/content.js"></script>
+<script>
+  // Simulate the "start capture" message the background script would send.
+  setTimeout(() => {
+    log('--- simulating SNAPTABLE_START ---');
+    messageListeners.forEach(fn => fn({ type: 'SNAPTABLE_START' }));
+  }, 200);
+
+  // Simulate a drag-select after the overlay appears.
+  function fireMouse(type, x, y) {
+    const ev = new MouseEvent(type, { clientX: x, clientY: y, bubbles: true, cancelable: true });
+    document.elementFromPoint(x, y)?.dispatchEvent(ev) ?? document.dispatchEvent(ev);
+  }
+  setTimeout(() => {
+    log('--- simulating drag select ---');
+    fireMouse('mousedown', 100, 150);
+    fireMouse('mousemove', 400, 350);
+    fireMouse('mouseup', 400, 350);
+  }, 500);
+</script>
+</body>
+</html>

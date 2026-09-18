@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome to Extractify</title>
+  <link rel="stylesheet" href="welcome.css" />
+</head>
+<body>
+  <div class="lang-toggle" role="group" aria-label="Interface language">
+    <button type="button" class="lang-btn" data-lang="en">EN</button>
+    <button type="button" class="lang-btn" data-lang="he">עב</button>
+  </div>
+
+  <main>
+    <div class="hero">
+      <img src="../../assets/icons/icon128.png" alt="" class="hero-icon" />
+      <p class="eyebrow" data-i18n="welcomeEyebrow">Welcome to</p>
+      <h1>Extractify</h1>
+      <p class="subtitle" data-i18n="welcomeSubtitle">Turn any part of your screen into a real, pasteable table.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">🖱️</div>
+        <h2 data-i18n="welcomeStep1Title">1. Start a capture</h2>
+        <p id="step1-body" data-i18n="welcomeStep1Body">Click the toolbar icon…</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">✂️</div>
+        <h2 data-i18n="welcomeStep2Title">2. Drag to select</h2>
+        <p data-i18n="welcomeStep2Body">Drag a rectangle over the text or table…</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">📝</div>
+        <h2 data-i18n="welcomeStep3Title">3. Review & copy</h2>
+        <p data-i18n="welcomeStep3Body">Extractify recognizes the text offline…</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">📋</div>
+        <h2 data-i18n="welcomeStep4Title">4. Paste anywhere</h2>
+        <p data-i18n="welcomeStep4Body">Paste into Excel or Google Sheets…</p>
+      </div>
+    </div>
+
+    <p class="privacy-note" data-i18n="welcomePrivacyNote">Everything runs locally.</p>
+
+    <div class="cta-row">
+      <button id="open-settings-btn" class="primary-btn" data-i18n="welcomeCta">Open Settings</button>
+      <button id="got-it-btn" class="secondary-btn" data-i18n="welcomeGotIt">Got it, let's go</button>
+    </div>
+  </main>
+
+  <script src="../shared/extractify-i18n.js"></script>
+  <script src="welcome.js"></script>
+</body>
+</html>

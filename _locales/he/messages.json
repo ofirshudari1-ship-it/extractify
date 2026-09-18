@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "Extractify",
+    "description": "Extension name shown in chrome://extensions, the toolbar tooltip, and the Chrome Web Store."
+  },
+  "extShortName": {
+    "message": "Extractify",
+    "description": "Short name shown where space is limited (e.g. toolbar overflow menu)."
+  },
+  "extDescription": {
+    "message": "OCR מקומי ואופליין לחלוטין, מבוסס AI: סמנו כל אזור במסך או תמונה, חלצו את הטקסט, והדביקו אותו כטבלה אמיתית ל-Excel או Google Sheets.",
+    "description": "Extension description shown in chrome://extensions and the Chrome Web Store listing."
+  },
+  "actionTitle": {
+    "message": "Extractify – לחצו כדי לצלם אזור",
+    "description": "Tooltip shown when hovering the toolbar icon."
+  },
+  "commandDescription": {
+    "message": "צילום אזור והמרתו לטבלה",
+    "description": "Shown on chrome://extensions/shortcuts next to the keyboard shortcut."
+  }
+}
