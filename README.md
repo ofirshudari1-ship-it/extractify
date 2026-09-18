@@ -1,164 +1,36 @@
-# Extractify – צילום מסך → טקסט/טבלה
+# Extractify
 
-תוסף כרום פרטי (לא מפורסם בחנות) שחותך אזור מהמסך (או תמונה/PDF שמוצג
-בדפדפן), מזהה בו טקסט באמצעות **AI מקומי** (מנוע OCR מבוסס רשת נוירונים,
-עברית + אנגלית, עובד לגמרי אופליין) ומאפשר להעתיק אותו כטבלה (TSV/Markdown)
-שמודבקת ישירות ל-Excel / Google Sheets / Notion כעמודות ושורות אמיתיות —
-או כטקסט רגיל. ממשק דו-לשוני (אנגלית כברירת מחדל, עברית זמינה בלחיצה) עם
-מסך "איך זה עובד" בהתקנה ראשונה, וכרטיס "אבטחה ופרטיות" מפורט בהגדרות.
+**Select a region of your screen (or right-click any image) and turn the text inside it into a real, editable table.**
 
-**גרסה נוכחית: 1.11.0.** להדרכה מפורטת שלב-אחר-שלב ראו
-[USER-GUIDE.md](USER-GUIDE.md). ראו [CHANGELOG.md](CHANGELOG.md) לרשימת שינויים
-תמציתית לפי גרסה, או [SPEC.md](SPEC.md) להסברים המלאים (למה, לא רק מה).
-התוסף נקרא בעבר **SnapTable OCR** (1.0–1.1) ואז **Tablify** (1.2) — שונה
-שם ל-**Extractify** ב-1.3.0 כדי לשקף טוב יותר שהוא מיועד לחילוץ טקסט
-ונתונים מכל תמונה/PDF, לא רק טבלאות.
+## What it does
 
-**פרטיות:** ההגדרות שלך (שפה, שפות OCR, רגישות) נשמרות רק במכשיר שלך
-(`chrome.storage.local`) — לעולם לא מסתנכרנות דרך חשבון Google, גם אם
-Chrome Sync דלוק.
+Extractify lets you drag-select any part of your screen — a table on a dashboard, a chart, a PDF preview, a scanned document — and instantly reads the text inside it using on-device OCR (optical character recognition). It automatically detects column structure and builds an editable table you can correct cell-by-cell, then copy straight into Excel, Google Sheets, or Notion as real rows and columns (not just plain text). It also works by right-clicking any image on a page to extract its table content in one click, without dragging a selection at all. The interface is bilingual (English and Hebrew), with OCR support for both languages.
 
-## התקנה
+## Install
 
-תוסף כרום לא צריך "קובץ התקנה" — כרום עצמו יודע לטעון תיקיית תוסף
-ישירות. שלושה שלבים:
+Extractify is not published on the Chrome Web Store, so installation is manual and there is no automatic update:
 
-1. חלצו (Extract All) את `Extractify-v1.11.0.zip` לתיקייה קבועה במחשב
-   (אל תמחקו אותה אחר כך – כרום טוען את הקבצים ממנה בכל פעם). התיקייה
-   שנוצרת מכילה את `manifest.json` ישירות בשורש שלה.
-2. בכרום, גשו ל-`chrome://extensions` והפעילו את המתג **מצב מפתח**
-   (Developer mode) בפינה הימנית העליונה.
-3. לחצו **טעינת תוסף שלא נארז** (Load unpacked) ובחרו את התיקייה שחילצתם.
+1. Download the latest `.zip` from the [Releases page](https://github.com/ofirshudari1-ship-it/extractify/releases/latest).
+2. Extract the zip to a folder you'll keep on your computer (don't delete it afterwards — Chrome loads the extension's files from there every time).
+3. Open `chrome://extensions` in Chrome.
+4. Turn on **Developer mode** (toggle in the top-right corner).
+5. Click **Load unpacked** and select the folder you extracted.
 
-סמל התוסף (סוגריים סגולים עם רשת קטנה) יופיע בסרגל הכלים, ומסך
-"ברוכים הבאים" ייפתח אוטומטית ויסביר איך להשתמש בו.
+Because this isn't a Chrome Web Store install, Chrome will never update it automatically. To get a new version later, download the new release zip, extract it over the same folder (or a fresh one), and click the reload icon on Extractify's card at `chrome://extensions` — or repeat "Load unpacked" for a new folder.
 
-*(כרום עשוי להראות באנר "השבתת תוספי מצב מפתח" בהפעלה — זה נורמלי לכל
-תוסף שנטען ככה, לא ספציפי ל-Extractify.)*
+## Key features
 
-### הסרת התקנה
+- **Region capture**: click the toolbar icon, press `Ctrl+Shift+K`, or right-click anywhere on a page to drag-select a screen region for OCR.
+- **One-click image extraction**: right-click directly on any image to pull its table content immediately, no dragging required.
+- **Editable results grid**: correct misread cells, add/remove rows and columns, and switch between a structured Grid view and plain Text view without losing edits.
+- **Multiple export formats**: copy as a tab-separated table (pastes as real columns in Excel/Sheets), copy as Markdown, copy as plain text, or download a real `.csv` file (UTF-8 with BOM, so Hebrew text opens correctly in Excel).
+- **Add Capture**: stitch together multiple screen regions (e.g. a table that's taller than the screen) into a single combined table before exporting.
+- **Recapture**: re-run OCR on the last captured region with one click — auto-highlighted whenever a capture fails or confidence is below 70%.
+- **Per-site remembered capture area**: optionally remembers the position and size of your last capture on each website, so returning to the same page lets you recapture instantly with Enter instead of dragging again.
+- **Confidence score**: each result shows an AI confidence score so you know when to double-check the text before trusting it.
 
-ב-`chrome://extensions`, מצאו את הכרטיס של Extractify ולחצו **"הסרה"**.
-אחר כך אפשר למחוק את התיקייה שחילצתם מה-ZIP.
+## Privacy
 
-## שימוש – 4 דרכים להתחיל צילום
+Extractify runs its OCR engine (Tesseract.js, a neural-network OCR engine compiled to WebAssembly) entirely on your device. It makes **zero network requests** — no server, no analytics, no crash reporting, no third-party SDK, and no AI API of any kind. The captured image and recognized text exist only in memory for the duration of a single capture and are never written to disk, logged, or transmitted anywhere.
 
-1. **לחיצה על סמל התוסף** בסרגל הכלים.
-2. **קיצור מקלדת**: `Ctrl+Shift+K` (או `⌘+Shift+K` ב-Mac).
-3. **לחיצה ימנית** בכל מקום בעמוד → **"Capture Area"**.
-4. **לחיצה ימנית ישירות על תמונה** → **"Extract Table from This Image"** –
-   מחלץ טבלה מהתמונה מיד, בלי צורך לגרור בחירה בכלל.
-
-לאחר מכן (עבור אפשרויות 1-3): גוררים מלבן מעל האזור עם הטבלה/הטקסט. בפאנל
-שנפתח (ניתן לגרור אותו ע"י גרירת הכותרת) רואים תמונה ממוזערת, פס התקדמות,
-**ציון ביטחון AI** (אדום אם מתחת ל-70% — כדאי לבדוק לפני שסומכים), ואת
-התוצאה עצמה — כברירת מחדל **כטבלה אמיתית וניתנת לעריכה** (Grid) אם זוהה
-מבנה עמודות, או כטקסט חופשי אם לא. מתג **Grid / Text** בראש הפאנל מחליף
-בין שתי התצוגות בלי לאבד עריכות. במצב Grid אפשר:
-- ללחוץ על כל תא ולתקן טעות זיהוי ישירות.
-- **+ Row** / **+ Column** להוספת שורה/עמודה ריקה.
-- **×** ליד כל שורה/עמודה למחיקתה.
-- Enter בתוך תא מזיז לתא שמתחתיו (לא מכניס שורה חדשה לתוך התא).
-
-ואז לוחצים על אחד מהכפתורים:
-- **Copy as Table (TSV)** – להדבקה כעמודות אמיתיות ב-Excel / Google Sheets.
-- **Copy as Markdown** – טבלת Markdown ל-Notion/GitHub/מסמכים.
-- **Copy as Text** – טקסט רגיל בלי מבנה עמודות.
-- **Download CSV** – שמירת קובץ `.csv` אמיתי (עם BOM שמבטיח שעברית תיפתח
-  נכון ב-Excel, לא כג'יבריש).
-- **+ Add Capture** – צילום אזור נוסף **בלי לסגור את הפאנל**, כשהשורות
-  שלו נוספות לסוף הטבלה הקיימת. שימושי לטבלה שארוכה מגובה המסך (דשבורד
-  ארוך, רשימה עם גלילה) — צלמו כל "עמוד" בנפרד וקבלו בסוף טבלה אחת
-  מאוחדת, בלי להדביק/למזג ידנית ב-Excel.
-- **New Area** – לצלם אזור נוסף **בסגירת** הטבלה הקיימת ופתיחת אחת חדשה.
-- **↻ Recapture** (חדש ב-1.11.0) – מריץ מחדש את אותו צילום בדיוק על אותו
-  אזור, בלי לגרור מחדש. מודגש אוטומטית כשהזיהוי נכשל או שביטחון ה-AI
-  מתחת ל-70%. מוסתר אחרי שימוש ב-Add Capture (כדי לא למחוק בטעות שורות
-  שכבר צורפו מאזורים אחרים).
-
-קיצורי מקלדת בפאנל: `Ctrl+Enter` = העתק כטבלה מיידית, `Esc` = סגירה.
-
-**זוכר אזור לפי אתר (חדש ב-1.11.0):** אחרי צילום-גרירה, האזור נשמר
-לפי האתר שבו צילמתם. בפעם הבאה שמתחילים צילום חדש (לא Add Capture)
-באותו אתר, מופיע ליד הרמז "גררו לבחירת אזור" כפתור "↻ הקישו Enter
-לשימוש חוזר באזור האחרון" — Enter מיד מפעיל צילום על אותו מלבן, בלי
-לגרור. ניתן לכבות תחת הגדרות ← התנהגות (**Remember the last capture
-area per website**), וגם לנקות את כל הרשימה השמורה משם. נשמרים רק
-מיקום וגודל המלבן — לעולם לא תוכן שצולם.
-
-לבסוף, עוברים ל-Excel/Sheets ולוחצים הדבקה (Ctrl+V) – התוכן ייכנס לתאים
-בשורות ועמודות אמיתיות.
-
-## הגדרות (Settings)
-
-לחיצה ימנית על סמל התוסף → **Options**, או `chrome://extensions` → פרטי
-התוסף → **פרטי התוסף**. שם ניתן:
-- **להחליף שפת ממשק** (אנגלית / עברית) – כפתור EN / עב בפינה הימנית העליונה.
-- לבחור שפות זיהוי OCR (עברית / אנגלית).
-- לכוון רגישות זיהוי עמודות (רפויה / רגילה / הדוקה).
-- **התנהגות** – להדליק "העתקה אוטומטית של התוצאה כטבלה כשהזיהוי מסתיים"
-  (כבוי כברירת מחדל), כדי לא ללחוץ על "Copy as Table" בכל פעם.
-- לקרוא **"אבטחה ופרטיות"** – מה קורה עם הנתונים שלך בפועל, ולמה כל
-  הרשאה שהתוסף מבקש נחוצה (מוסבר בשפה פשוטה, לא ז'רגון).
-- להריץ **"Run Test"** – בדיקת OCR אמיתית על תמונת בדיקה מובנית, כדי לוודא
-  שמנוע ה-OCR האופליין עובד תקין על המחשב הזה. מומלץ להריץ פעם אחת אחרי
-  ההתקנה.
-- לקרוא **עזרה ושאלות נפוצות** ואת סעיף **About** (גרסה, הצהרת פרטיות).
-
-## איך מעדכנים לגרסה חדשה (בלי להתקין מחדש)
-
-התוסף פרטי (לא בחנות), אז אין עדכון אוטומטי אמיתי של כרום – אבל **אין
-צורך "להתקין מחדש" מאפס**:
-1. חלצו את ה-ZIP החדש (שם הקובץ כולל את מספר הגרסה, למשל
-   `Extractify-v1.11.0.zip`) **מעל** התיקייה הקיימת (דריסה על הקבצים) —
-   לא לתיקייה חדשה נפרדת, אחרת כרום ימשיך לטעון את הגרסה הישנה.
-2. גשו ל-`chrome://extensions` ולחצו על סמל הרענון (↻) בכרטיס של Extractify.
-3. ההגדרות שלכם (שפה, שפות OCR, רגישות) נשמרות אוטומטית, ותופיע הודעה
-   קצרה "Extractify was just updated to vX.X.X" בעמוד ההגדרות.
-
-## מבנה הפרויקט
-
-```
-Extractify/
-├── manifest.json              ← שורש הפרויקט = בדיוק מה שטוענים בכרום
-│                                 (Load unpacked) וגם תוכן ה-ZIP
-├── src/
-│   ├── background/background.js  ← service worker: הפעלה, תפריט לחיצה ימנית, offscreen doc
-│   ├── content/
-│   │   ├── content.js            ← בחירת אזור, חיתוך תמונה, UI פאנל (לא ה-OCR עצמו)
-│   │   └── overlay.css
-│   ├── offscreen/                 ← עמוד תוסף נסתר שמריץ את ה-OCR בפועל (ר' SPEC.md v1.2.1)
-│   ├── options/                   ← עמוד ההגדרות (שפה, OCR, אבטחה/פרטיות, בדיקה, עזרה, אודות)
-│   ├── welcome/                    ← מסך "ברוכים הבאים" שנפתח בהתקנה ראשונה
-│   └── shared/
-│       ├── extractify-i18n.js     ← מילון תרגומים בזמן ריצה (עמודי התוסף עצמם)
-│       ├── snaptable-ocr.js       ← לוגיקת OCR/טבלה משותפת (שם קובץ פנימי היסטורי)
-│       └── ...                     ← Tesseract.js + נתוני שפה, אופליין
-├── assets/icons/               ← לוגו בגדלים 16/32/48/128
-├── _locales/en|he/messages.json ← i18n מקורי של כרום, רק למחרוזות ברמת המניפסט
-│                                    (שם/תיאור/טולטיפ) — ר' SPEC.md v1.10.0 להבדל
-│                                    מ-src/shared/extractify-i18n.js
-├── tests/                      ← כלי בדיקה עצמאיים (לא נארזים ב-ZIP)
-│   ├── harness.html            ← מריץ את שרשרת ה-OCR מחוץ לתוסף
-│   └── panel-ui-harness.html   ← מריץ את content.js האמיתי עם "לחשן" לכרום
-├── build/
-│   ├── build.ps1                ← בנייה בפקודה אחת: אימות + ZIP חדש
-│   └── make-icons.ps1           ← הסקריפט שיצר את הלוגו/האייקונים
-├── store/STORE_LISTING.md      ← טקסט לחנות תוספי כרום (עדיין לא מפורסם שם)
-├── site/README.md              ← קישור לדף הנחיתה המתארח כ-Claude Artifact
-├── CHANGELOG.md                 ← מה השתנה בכל גרסה, בקצרה
-├── SPEC.md                     ← מסמך אפיון: החלטות, ארכיטקטורה, מגבלות, בדיקות
-├── USER-GUIDE.md               ← הדרכה שלב-אחר-שלב עם טקסט מדויק של כפתורים
-├── RELEASE-CHECKLIST.md        ← צ'קליסט לפני כל שחרור גרסה
-├── PRIVACY.md / EULA.md        ← מדיניות פרטיות ורישיון שימוש, דו-לשוני
-├── DELETIONS.md                ← יומן קבצים שהוזזו/הוסרו, עם סיבה
-└── Extractify-v1.11.0.zip      ← קובץ ה-ZIP להתקנה (manifest.json+src/+assets/+_locales/ בלבד)
-```
-
-עד גרסה 1.4.0 היה גם קובץ EXE/`.bat` להתקנה "אוטומטית" ופרויקט `installer/`
-שבנה אותו — **הוסרו** ב-1.5.0: תוסף כרום לא צריך קובץ התקנה נפרד, ו-Load
-unpacked הוא הדרך הרגילה, הקצרה, והתקנית. ראו SPEC.md → "גרסה 1.5.0".
-
-## מגבלות ידועות
-
-ראו את הסעיף "מגבלות ומה שכדאי לדעת" במסמך [SPEC.md](SPEC.md).
+The only data stored locally (via `chrome.storage.local`, never synced through your Google account) is your own preferences — interface language, OCR languages, column sensitivity — plus, if you leave the optional "remember capture area per website" setting on, the position and size (not content) of your last capture on each site. Everything can be cleared from Settings at any time, and uninstalling the extension removes it all.
