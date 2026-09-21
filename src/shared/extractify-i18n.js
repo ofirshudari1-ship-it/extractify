@@ -16,6 +16,8 @@
 
       // content script — selection overlay
       selectHint: "Drag to select an area to scan · Esc to cancel",
+      kbdSelectionHint: "⌨ Press Enter for a keyboard-adjustable selection",
+      kbdSelectionActiveHint: "Arrows to move · Shift + Arrows to resize · Enter to confirm · Esc to cancel",
 
       // content script — result panel
       panelTitle: "Extractify",
@@ -143,6 +145,7 @@
       triggerToolbar: "Click the toolbar icon",
       triggerRightClick: "Right-click anywhere on the page → “Capture Area”",
       triggerRightClickImage: "Right-click directly on an image → “Extract Table from This Image” (no need to drag-select)",
+      triggerKeyboardSelect: "Mouse-free: after starting a capture, press Enter for a keyboard-adjustable selection box (arrows to move, Shift + arrows to resize)",
       shortcutLinkBtn: "Open keyboard shortcut settings (to change it)",
 
       secHelpTitle: "Help & FAQ",
@@ -162,6 +165,8 @@
       faqA7: "Some sites set a strict security policy that blocks the OCR engine from starting directly on the page (you'd see an error like \"Failed to construct 'Worker'\"). The \"offscreen\" permission lets Extractify run OCR on a hidden page of its own instead, immune to that site's policy — so recognition keeps working everywhere. \"Access to all websites\" is what lets the capture tool and this fix apply on any site you visit, not a fixed list. See Security & Privacy above for what every permission is used for.",
       faqQ8: "Why did it copy something without me clicking Copy?",
       faqA8: "You turned on \"Automatically copy the result as a table when recognition finishes\" under Behavior above. Turn it back off there if you'd rather copy manually each time.",
+      faqQ9: "Can I use Extractify without a mouse?",
+      faqA9: "Yes. Trigger a capture with the keyboard shortcut or the right-click menu (open it with the Menu key or Shift+F10), then press Enter to get an adjustable selection box you can move with the arrow keys and resize with Shift + arrow keys. Press Enter again to capture it, or Esc to cancel at any point. Every button in the result panel (Copy, Download, Recapture, etc.) is a regular button reachable with Tab.",
 
       secAboutTitle: "About",
       aboutVersion: "Version {version}",
@@ -196,6 +201,8 @@
       ctxExtractImage: "חילוץ טבלה מהתמונה הזו",
 
       selectHint: "גררו לבחירת אזור לזיהוי טקסט · Esc לביטול",
+      kbdSelectionHint: "⌨ הקישו Enter לבחירה מדויקת עם המקלדת",
+      kbdSelectionActiveHint: "חצים להזזה · Shift+חצים לשינוי גודל · Enter לאישור · Esc לביטול",
 
       panelTitle: "Extractify",
       close: "סגור",
@@ -321,6 +328,7 @@
       triggerToolbar: "לחיצה על סמל התוסף בסרגל הכלים",
       triggerRightClick: "לחיצה ימנית בכל מקום בעמוד ← \"צילום אזור\"",
       triggerRightClickImage: "לחיצה ימנית ישירות על תמונה ← \"חילוץ טבלה מהתמונה הזו\" (בלי צורך לגרור בחירה)",
+      triggerKeyboardSelect: "בלי עכבר: אחרי התחלת צילום, הקישו Enter לתיבת בחירה שניתן להזיז ולשנות את גודלה עם המקלדת (חצים להזזה, Shift+חצים לשינוי גודל)",
       shortcutLinkBtn: "פתיחת הגדרות קיצורי מקלדת (לשינוי)",
 
       secHelpTitle: "עזרה ושאלות נפוצות",
@@ -340,6 +348,8 @@
       faqA7: "אתרים מסוימים מגדירים מדיניות אבטחה מחמירה שחוסמת את מנוע ה-OCR מלהתחיל ישירות בעמוד (הייתם רואים שגיאה כמו \"Failed to construct 'Worker'\"). הרשאת \"offscreen\" מאפשרת ל-Extractify להריץ את ה-OCR בעמוד נסתר משלו במקום זאת, חסין מהמדיניות של האתר – כך שהזיהוי ממשיך לעבוד בכל מקום. \"גישה לכל האתרים\" היא מה שמאפשר לכלי הצילום ולתיקון הזה לפעול בכל אתר שתבקרו בו, לא רשימה קבועה. ראו אבטחה ופרטיות למעלה למה כל הרשאה משמשת.",
       faqQ8: "למה זה העתיק משהו בלי שלחצתי על העתקה?",
       faqA8: "הדלקתם את \"העתקה אוטומטית של התוצאה כטבלה כשהזיהוי מסתיים\" תחת התנהגות למעלה. כבו אותה שם אם אתם מעדיפים להעתיק ידנית בכל פעם.",
+      faqQ9: "אפשר להשתמש ב-Extractify בלי עכבר?",
+      faqA9: "כן. מפעילים צילום עם קיצור המקלדת או תפריט הקליק-הימני (שנפתח גם עם מקש התפריט או Shift+F10), ואז מקישים Enter לקבלת תיבת בחירה שניתן להזיז עם החצים ולשנות את גודלה עם Shift+חצים. הקשה נוספת על Enter מצלמת אותה, ו-Esc מבטל בכל שלב. גם כפתורי פאנל התוצאה (העתקה, הורדה, צילום מחדש וכו') הם כפתורים רגילים שניתן להגיע אליהם עם Tab.",
 
       secAboutTitle: "אודות",
       aboutVersion: "גרסה {version}",

@@ -26,6 +26,8 @@ if (window.__snaptableActive) {
     busy: false, // true while a capture is being cropped/recognized
     lastRect: null, // {left, top, width, height} of the most recent drag capture - powers "Recapture"
     savedRegionForReuse: null, // a per-site remembered region offered during the current selection, if any
+    kbdBox: null, // {left, top, width, height} of the keyboard-adjustable selection box, while active
+    kbdHintEl: null, // the second line inside the selection hint that shows keyboard instructions
   };
 
   // Per-site "remember this area" store, keyed by hostname. Lets a user who
@@ -89,17 +91,112 @@ if (window.__snaptableActive) {
       else if (STATE.panel) closePanel();
       return;
     }
-    if (!e.ctrlKey && !e.metaKey && e.key === "Enter" && STATE.root && !STATE.dragStart && STATE.savedRegionForReuse) {
+    if (!e.ctrlKey && !e.metaKey && e.key === "Enter" && STATE.root && !STATE.dragStart) {
       // Only offered while the selection overlay is up and nothing has been
-      // dragged yet - once dragging starts, Enter has no special meaning.
+      // mouse-dragged yet - once dragging starts, Enter has no special
+      // meaning. Three things Enter can mean here, checked in priority
+      // order: reuse a saved region if one was offered, confirm an
+      // already-active keyboard selection box, or (the mouse-free entry
+      // point into capturing at all) start one.
       e.preventDefault();
-      useSavedRegion();
+      if (STATE.savedRegionForReuse) {
+        useSavedRegion();
+      } else if (STATE.kbdBox) {
+        confirmKeyboardSelection();
+      } else {
+        startKeyboardSelection();
+      }
+      return;
+    }
+    if (STATE.kbdBox && !STATE.dragStart && e.key.startsWith("Arrow")) {
+      e.preventDefault();
+      adjustKeyboardBox(e);
       return;
     }
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && STATE.panel) {
       e.preventDefault();
       STATE.panel.el.querySelector('[data-action="copy-table"]')?.click();
     }
+  }
+
+  // ---- Keyboard-only region selection ----
+  // The core interaction (drag a rectangle with the mouse) has no keyboard
+  // equivalent by nature, so this is the accessible alternative: a box of a
+  // sensible default size appears centered in the viewport, movable with the
+  // arrow keys and resizable with Shift + arrow keys, confirmed with Enter
+  // and cancelled with Esc (already handled above via cleanupSelectionOverlay,
+  // which also clears STATE.kbdBox). Reuses the same .snaptable-selection
+  // box/label elements and rect shape captureAndRecognize() already expects,
+  // so nothing downstream needs to know whether a region came from a mouse
+  // drag or the keyboard.
+  const KBD_STEP = 16;
+  const KBD_STEP_LARGE = 48; // Alt+Arrow, for covering more ground quickly
+
+  function startKeyboardSelection() {
+    if (!STATE.root) return;
+    const width = Math.max(60, Math.min(360, Math.round(window.innerWidth * 0.5)));
+    const height = Math.max(60, Math.min(220, Math.round(window.innerHeight * 0.4)));
+    STATE.kbdBox = {
+      left: Math.round((window.innerWidth - width) / 2),
+      top: Math.round((window.innerHeight - height) / 2),
+      width,
+      height,
+    };
+
+    const box = document.createElement("div");
+    box.className = "snaptable-selection snaptable-selection-kbd";
+    STATE.root.appendChild(box);
+    STATE.selectionBox = box;
+
+    const label = document.createElement("div");
+    label.className = "snaptable-size-label";
+    STATE.root.appendChild(label);
+    STATE.sizeLabel = label;
+
+    renderKeyboardBox();
+    if (STATE.kbdHintEl) STATE.kbdHintEl.textContent = T("kbdSelectionActiveHint");
+  }
+
+  function renderKeyboardBox() {
+    const { left, top, width, height } = STATE.kbdBox;
+    Object.assign(STATE.selectionBox.style, {
+      left: `${left}px`,
+      top: `${top}px`,
+      width: `${width}px`,
+      height: `${height}px`,
+    });
+    Object.assign(STATE.sizeLabel.style, { left: `${left}px`, top: `${top}px` });
+    STATE.sizeLabel.textContent = `${Math.round(width)} × ${Math.round(height)}`;
+  }
+
+  function adjustKeyboardBox(e) {
+    const box = STATE.kbdBox;
+    const step = e.altKey ? KBD_STEP_LARGE : KBD_STEP;
+    const maxW = window.innerWidth;
+    const maxH = window.innerHeight;
+    if (e.shiftKey) {
+      // Resize, anchored at the box's current top-left corner.
+      if (e.key === "ArrowRight") box.width = Math.min(maxW - box.left, box.width + step);
+      else if (e.key === "ArrowLeft") box.width = Math.max(24, box.width - step);
+      else if (e.key === "ArrowDown") box.height = Math.min(maxH - box.top, box.height + step);
+      else if (e.key === "ArrowUp") box.height = Math.max(24, box.height - step);
+    } else {
+      // Move, clamped so the box can never be dragged off-screen.
+      if (e.key === "ArrowRight") box.left = Math.min(maxW - box.width, box.left + step);
+      else if (e.key === "ArrowLeft") box.left = Math.max(0, box.left - step);
+      else if (e.key === "ArrowDown") box.top = Math.min(maxH - box.height, box.top + step);
+      else if (e.key === "ArrowUp") box.top = Math.max(0, box.top - step);
+    }
+    renderKeyboardBox();
+  }
+
+  async function confirmKeyboardSelection() {
+    const rect = Object.assign({}, STATE.kbdBox);
+    STATE.kbdBox = null;
+    const append = STATE.appendMode;
+    STATE.appendMode = false;
+    cleanupSelectionOverlay();
+    await captureAndRecognize(rect, { append });
   }
 
   function T(key, vars) {
@@ -205,6 +302,8 @@ if (window.__snaptableActive) {
     document.removeEventListener("mouseup", onMouseUp, true);
     document.removeEventListener("mousedown", onMouseDown, true);
     STATE.dragStart = null;
+    STATE.kbdBox = null;
+    STATE.kbdHintEl = null;
   }
 
   function closePanel() {
@@ -233,8 +332,20 @@ if (window.__snaptableActive) {
 
     const hint = document.createElement("div");
     hint.className = "snaptable-hint";
+    hint.setAttribute("role", "status");
+    hint.setAttribute("aria-live", "polite");
     hint.textContent = T("selectHint");
     root.appendChild(hint);
+
+    // Always visible, not just once the user tries it - this is the only
+    // discoverable hint that dragging isn't the sole way to select a region
+    // (see startKeyboardSelection(), triggered by Enter). Its text switches
+    // to the active move/resize/confirm instructions once that mode starts.
+    const kbdHint = document.createElement("div");
+    kbdHint.className = "snaptable-hint-kbd";
+    kbdHint.textContent = T("kbdSelectionHint");
+    hint.appendChild(kbdHint);
+    STATE.kbdHintEl = kbdHint;
 
     document.documentElement.appendChild(root);
 
@@ -291,6 +402,17 @@ if (window.__snaptableActive) {
     if (!STATE.root) return;
     e.preventDefault();
     STATE.dragStart = { x: e.clientX, y: e.clientY };
+
+    // An in-progress keyboard selection (see startKeyboardSelection) is
+    // superseded by an actual mouse drag - remove its box/label instead of
+    // leaving them behind as orphaned DOM nodes once STATE.selectionBox
+    // below gets reassigned to the new mouse-drawn box.
+    if (STATE.kbdBox) {
+      STATE.kbdBox = null;
+      STATE.selectionBox?.remove();
+      STATE.sizeLabel?.remove();
+      if (STATE.kbdHintEl) STATE.kbdHintEl.textContent = T("kbdSelectionHint");
+    }
 
     const box = document.createElement("div");
     box.className = "snaptable-selection";
@@ -616,6 +738,12 @@ if (window.__snaptableActive) {
     const panel = document.createElement("div");
     panel.className = "snaptable-panel";
     panel.style.direction = ExtractifyI18n.dirFor(STATE.uiLang);
+    // Announces itself to assistive tech as a dialog the moment it appears -
+    // otherwise a screen-reader user has no way to know new content just
+    // showed up on the page at all, since it's inserted outside the normal
+    // reading flow (appended to documentElement, not the page content).
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-label", T("panelTitle"));
     if (STATE.lastPanelPos) {
       // Clamped so a panel dragged before a window resize (or before
       // scrolling on a page where it ended up far down) can't reopen
@@ -659,7 +787,7 @@ if (window.__snaptableActive) {
         </div>
         <textarea spellcheck="false" placeholder="${T("placeholderText")}"></textarea>
         <div class="snaptable-progress" hidden><div class="snaptable-progress-fill"></div></div>
-        <div class="snaptable-status"></div>
+        <div class="snaptable-status" role="status" aria-live="polite"></div>
       </div>
       <div class="snaptable-panel-footer">
         <button class="snaptable-btn snaptable-btn-primary" data-action="copy-table">${T("copyTable")}</button>
@@ -674,6 +802,13 @@ if (window.__snaptableActive) {
 
     document.documentElement.appendChild(panel);
     STATE.panel = { el: panel };
+    // Moves keyboard focus into the panel as soon as it appears, same as any
+    // other dialog - without this, a keyboard-only user has no indication
+    // focus is still sitting wherever it was on the host page, and would
+    // have to hunt for the panel with Tab from scratch. The close button is
+    // the first focusable element in DOM/reading order, so this also lines
+    // focus up with where Tab would naturally start.
+    panel.querySelector(".snaptable-btn-close")?.focus({ preventScroll: true });
 
     const textarea = panel.querySelector("textarea");
     const statusEl = panel.querySelector(".snaptable-status");
@@ -841,10 +976,27 @@ if (window.__snaptableActive) {
       el: panel,
       setStatus(text, spinning, isError) {
         statusEl.classList.toggle("is-error", !!isError);
+        // A finished, successful status (not spinning, not an error) gets a
+        // small checkmark ahead of the text - the clearest, quickest signal
+        // that recognition actually completed, and (together with the
+        // status text itself) never relies on color alone the way a plain
+        // green dot would.
+        const success = !spinning && !isError;
         statusEl.innerHTML = spinning
           ? `<span class="snaptable-spinner"></span><span></span>`
+          : success
+          ? `<span class="snaptable-status-icon" aria-hidden="true">✓</span><span></span>`
           : `<span></span>`;
         statusEl.lastElementChild.textContent = text;
+        if (success) {
+          // Restart the flash even if the class is already present from a
+          // previous success (e.g. "Add Capture" run twice in a row) -
+          // removing then forcing a reflow before re-adding it is the
+          // standard way to replay a CSS animation on the same element.
+          panel.classList.remove("snaptable-flash-success");
+          void panel.offsetWidth;
+          panel.classList.add("snaptable-flash-success");
+        }
         const busy = !!spinning;
         copyTableBtn.disabled = busy;
         copyTextBtn.disabled = busy;

@@ -71,7 +71,7 @@
       </label>
       <p class="hint" data-i18n="rememberRegionsHint">Press Enter right after starting a capture to reuse the last area on that site.</p>
       <button type="button" id="clear-regions-btn" class="secondary-btn">Clear saved areas</button>
-      <span id="clear-regions-status" class="save-status-inline"></span>
+      <span id="clear-regions-status" class="save-status-inline" role="status" aria-live="polite"></span>
     </section>
 
     <section class="card">
@@ -103,7 +103,8 @@
       <h2 data-i18n="secTestTitle">Test OCR Engine</h2>
       <p class="hint" data-i18n="secTestHint">Runs real OCR on a built-in test image.</p>
       <button id="test-btn" class="secondary-btn" data-i18n="testBtn">Run Test</button>
-      <div id="test-result" class="test-result" hidden></div>
+      <div id="test-progress" class="test-progress" hidden><div id="test-progress-fill" class="test-progress-fill"></div></div>
+      <div id="test-result" class="test-result" role="status" aria-live="polite" hidden></div>
     </section>
 
     <section class="card">
@@ -114,6 +115,7 @@
         <li><span class="trigger-icon">⌨️</span> <span><kbd>Ctrl+Shift+K</kbd> / <kbd>⌘+Shift+K</kbd></span></li>
         <li><span class="trigger-icon">🖱️</span> <span data-i18n="triggerRightClick">Right-click anywhere → "Capture Area"</span></li>
         <li><span class="trigger-icon">🖼️</span> <span data-i18n="triggerRightClickImage">Right-click an image → "Extract Table from This Image"</span></li>
+        <li><span class="trigger-icon">⌨️</span> <span data-i18n="triggerKeyboardSelect">Mouse-free: after starting a capture, press Enter for a keyboard-adjustable selection box</span></li>
       </ul>
       <a
         id="shortcuts-link"
@@ -161,6 +163,10 @@
           <summary data-i18n="faqQ8">Why did it copy something without me clicking Copy?</summary>
           <p data-i18n="faqA8">You turned on auto-copy under Behavior above.</p>
         </details>
+        <details>
+          <summary data-i18n="faqQ9">Can I use Extractify without a mouse?</summary>
+          <p data-i18n="faqA9">Yes — see Keyboard Shortcut &amp; Right-Click above.</p>
+        </details>
       </div>
     </section>
 
@@ -173,7 +179,7 @@
     <div class="save-row">
       <button id="save-btn" class="primary-btn" data-i18n="saveBtn">Save</button>
       <button id="reset-btn" class="secondary-btn" data-i18n="resetBtn">Reset to Defaults</button>
-      <span id="save-status"></span>
+      <span id="save-status" role="status" aria-live="polite"></span>
     </div>
   </main>
 

@@ -29,6 +29,8 @@ const subtitleEl = document.getElementById("subtitle-version");
 const aboutVersionEl = document.getElementById("about-version");
 const testBtn = document.getElementById("test-btn");
 const testResult = document.getElementById("test-result");
+const testProgress = document.getElementById("test-progress");
+const testProgressFill = document.getElementById("test-progress-fill");
 const langButtons = document.querySelectorAll(".lang-btn");
 const updateBanner = document.getElementById("update-banner");
 const updateBannerText = document.getElementById("update-banner-text");
@@ -206,6 +208,8 @@ async function runSelfTest() {
   testResult.hidden = false;
   testResult.className = "test-result";
   testResult.textContent = T("testStarting");
+  testProgress.hidden = false;
+  testProgressFill.style.width = "0%";
 
   const settings = readForm();
   const t0 = performance.now();
@@ -213,7 +217,9 @@ async function runSelfTest() {
   try {
     worker = await SnapTableOCR.createOcrWorker(settings.languages, (m) => {
       if (m?.status) {
-        testResult.textContent = `${m.status} — ${Math.round((m.progress || 0) * 100)}%`;
+        const pct = Math.round((m.progress || 0) * 100);
+        testResult.textContent = `${m.status} — ${pct}%`;
+        testProgressFill.style.width = pct + "%";
       }
     });
 
@@ -250,6 +256,7 @@ async function runSelfTest() {
       try { await worker.terminate(); } catch (_) { /* already gone */ }
     }
     testBtn.disabled = false;
+    testProgress.hidden = true;
   }
 }
 

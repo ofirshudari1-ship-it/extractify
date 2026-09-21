@@ -89,6 +89,12 @@ h1 { font-size: 19px; margin: 0; }
   font-size: 13px;
 }
 
+/* Without this, the banner rendered as an empty purple box on every Settings
+   page load - the `hidden` attribute lost to this class's own `display:
+   flex` (equal specificity, later in source order), so JS never actually
+   got to hide it even when there was no update to announce. */
+.update-banner[hidden] { display: none; }
+
 .update-banner button {
   margin-inline-start: auto;
   background: transparent;
@@ -176,6 +182,13 @@ button {
 .primary-btn:hover { background: var(--primary-dark); }
 
 .secondary-btn { background: var(--border); color: var(--text); }
+.secondary-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--border) 70%, var(--text) 10%); }
+.secondary-btn:disabled { opacity: 0.6; cursor: default; }
+
+.lang-btn:hover:not(.is-active) {
+  color: var(--text);
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+}
 
 button { transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease; }
 button:active { transform: scale(0.97); }
@@ -193,6 +206,21 @@ button:focus-visible {
 .save-status-inline { margin-inline-start: 8px; }
 
 #clear-regions-btn { margin-top: 2px; }
+
+.test-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.test-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(45deg, #4F46E5, #7C3AED);
+  transition: width 0.2s ease-out;
+}
 
 .test-result {
   margin-top: 12px;
@@ -257,7 +285,10 @@ button:focus-visible {
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
+  transition: color 150ms ease;
 }
+
+.faq summary:hover { color: var(--primary); }
 
 .faq summary::marker { color: var(--primary); }
 
@@ -273,7 +304,10 @@ button:focus-visible {
   font-weight: 600;
   cursor: pointer;
   color: var(--primary);
+  transition: color 150ms ease;
 }
+
+.perms-details summary:hover { color: var(--primary-dark); }
 
 .perms-list {
   margin: 12px 0 0;
