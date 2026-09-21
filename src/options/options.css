@@ -1,5 +1,11 @@
 :root {
-  color-scheme: light;
+  /* Was forced to "light" only, which keeps native form controls (the
+     checkboxes/radios below) rendered in the browser's light widget theme
+     even while the page itself switches to the dark palette in the media
+     query underneath - a stark white box/circle on a dark card. Declaring
+     both lets the browser pick the native-control theme that actually
+     matches prefers-color-scheme, same as the rest of the page. */
+  color-scheme: light dark;
   --bg: #f5f5fa;
   --card: #ffffff;
   --text: #1f2233;

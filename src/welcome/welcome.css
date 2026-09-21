@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* light + dark (not "light" alone) so native controls/scrollbars follow
+     prefers-color-scheme like the rest of the page - see options.css for
+     the full explanation of the mismatch this avoids. */
+  color-scheme: light dark;
   --bg: #f5f5fa;
   --card: #ffffff;
   --text: #1f2233;
