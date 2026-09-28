@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "source": "hero-source.svg",
+    "files": {
+      "hero.png": { "width": 1200, "height": 630, "format": "png" },
+      "hero.webp": { "width": 1200, "height": 630, "format": "webp" }
+    },
+    "alt": {
+      "en": "Extractify: select a region of a screenshot and get a real, structured table back, entirely on-device",
+      "he": "Extractify: מסמנים אזור בצילום מסך ומקבלים בחזרה טבלה אמיתית ומובנית, לגמרי במכשיר"
+    },
+    "brandSource": "src/options/options.css + src/welcome/welcome.css (--primary #4F46E5, gradient to #7C3AED) and assets/icons/icon128.png; typography per site/README.md (IBM Plex Mono/Sans pairing)",
+    "generatedWith": "local-designer skill: hand-authored SVG rasterized with sharp (Node) — no generative-AI image credits used",
+    "usedIn": "Landing page (hosted Claude Artifact, see ../../site/README.md) as a top banner, uploaded via the Artifact assets capability",
+    "contrastChecked": "WCAG AA verified for all text on the #f7f5fb background (>=4.5:1)"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "onboardingIllustration": {
+    "source": "onboarding-illustration-source.svg",
+    "wiredInto": "src/welcome/welcome.html (inlined, not loaded as an external file, so it can use welcome.css's var(--card)/var(--border)/var(--primary)/var(--muted) and track light/dark mode automatically)",
+    "dimensions": "viewBox 0 0 440 176, scales to 100% width up to max-width: 440px (src/welcome/welcome.css .hero-illustration)",
+    "decorative": true,
+    "ariaHidden": "true — reinforces the existing step-by-step text on the Welcome screen rather than conveying new information, so it carries no alt text of its own",
+    "brandSource": "src/welcome/welcome.css (--primary #4F46E5) + assets/icons/icon128.png capture-bracket motif",
+    "generatedWith": "local-designer skill: hand-authored SVG, no rasterization needed (renders natively and crisply in the extension UI, zero extra bytes)",
+    "verifiedIn": "Chrome (light + dark, EN + Hebrew/RTL) via a local static server, see release notes"
+  }
+}

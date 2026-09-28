@@ -110,6 +110,16 @@ h1 {
   line-height: 1.6;
 }
 
+.hero-illustration {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  margin: 8px auto 0;
+  animation: welcome-step-in 0.4s ease-out backwards;
+  animation-delay: 0.02s;
+}
+
 .steps {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

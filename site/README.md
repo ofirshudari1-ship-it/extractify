@@ -10,3 +10,9 @@ Kept up to date with the shipping log each time `CHANGELOG.md` gets a new
 entry worth surfacing publicly. See `SPEC.md` for the design rationale
 (IBM Plex Mono/Sans pairing, indigo→violet brand gradient, the hero's
 before/after OCR mockup).
+
+As of v1.13.0 the page also carries a static marketing hero banner at the
+top (above the nav), uploaded to the Artifact via its `assets` capability.
+The source SVG and the rasterized PNG/WebP also live in the repo at
+`../assets/marketing/` (see `meta.json` there) so the same image can be
+reused elsewhere (GitHub social preview, README) without regenerating it.
