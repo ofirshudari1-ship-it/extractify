@@ -77,6 +77,18 @@
       optionsTitle: "Extractify Settings",
       subtitleVersion: "Screenshot → Text / Table · v{version}",
 
+      secUpdateTitle: "Updates",
+      updateAvailableText: "A new version is available: {latest} (you have {current}). Download the ZIP, extract it over your current folder, then click the reload icon on Extractify's card at chrome://extensions.",
+      updateDownload: "Download version {latest}",
+      updateDismiss: "Not now",
+      updateCheckLabel: "Check for new versions automatically",
+      updateCheckHint: "At most once every 12 hours, Extractify asks GitHub (api.github.com) for the number of the latest release. Nothing about you, your pages or your captures is sent, and nothing is downloaded or installed by itself. Turn this off and Extractify makes no network requests at all.",
+      updateCheckNow: "Check now",
+      updateStatusUpToDate: "You are up to date (version {current}).",
+      updateStatusAvailable: "Version {latest} is available.",
+      updateStatusChecking: "Checking...",
+      updateStatusFailed: "Could not check right now. Try again later.",
+      updateStatusOff: "Automatic checking is off.",
       updateBanner: "Extractify was just updated to v{version}. Your settings were kept.",
 
       secUiLangTitle: "Interface Language",
@@ -160,7 +172,7 @@
       faqQ5: "How do I update to a newer version?",
       faqA5: "Extract the new ZIP over the existing folder (overwrite the files), then click the reload icon (↻) on Extractify's card at chrome://extensions. Your settings are kept — no need to remove and reinstall.",
       faqQ6: "Does anything leave my computer?",
-      faqA6: "No. OCR runs fully offline inside your browser — screenshots and recognized text are never uploaded anywhere.",
+      faqA6: "No. OCR runs fully offline inside your browser — screenshots and recognized text are never uploaded anywhere. The only network request Extractify can make is the optional version check (see Updates above), which sends nothing about you and can be turned off.",
       faqQ7: "Why does it need access to every website, and an unusual-sounding \"offscreen\" permission?",
       faqA7: "Some sites set a strict security policy that blocks the OCR engine from starting directly on the page (you'd see an error like \"Failed to construct 'Worker'\"). The \"offscreen\" permission lets Extractify run OCR on a hidden page of its own instead, immune to that site's policy — so recognition keeps working everywhere. \"Access to all websites\" is what lets the capture tool and this fix apply on any site you visit, not a fixed list. See Security & Privacy above for what every permission is used for.",
       faqQ8: "Why did it copy something without me clicking Copy?",
@@ -170,7 +182,7 @@
 
       secAboutTitle: "About",
       aboutVersion: "Version {version}",
-      aboutPrivacy: "Extractify runs 100% offline: no screenshots, recognized text, or usage data ever leave your computer. No account, no server, no tracking.",
+      aboutPrivacy: "Text recognition runs 100% offline: no screenshots, recognized text, or usage data ever leave your computer. No account, no server, no tracking. The only optional network request is the version check against GitHub, which you can turn off under Updates.",
 
       saveBtn: "Save",
       resetBtn: "Reset to Defaults",
@@ -260,6 +272,18 @@
       optionsTitle: "הגדרות Extractify",
       subtitleVersion: "צילום מסך ← טקסט/טבלה · גרסה {version}",
 
+      secUpdateTitle: "עדכונים",
+      updateAvailableText: "יצאה גרסה חדשה: {latest} (אצלך מותקנת {current}). הורידו את קובץ ה-ZIP, חלצו אותו מעל התיקייה הקיימת ולחצו על סמל הרענון בכרטיס של Extractify ב-chrome://extensions.",
+      updateDownload: "הורדת גרסה {latest}",
+      updateDismiss: "לא עכשיו",
+      updateCheckLabel: "בדיקה אוטומטית של גרסאות חדשות",
+      updateCheckHint: "פעם ב-12 שעות לכל היותר, Extractify שואל את GitHub (api.github.com) מה מספר הגרסה האחרונה. לא נשלח שום מידע עליכם, על העמודים שלכם או על הצילומים, ושום דבר לא יורד או מותקן מעצמו. כשהאפשרות כבויה, Extractify לא פונה לרשת בכלל.",
+      updateCheckNow: "בדיקה עכשיו",
+      updateStatusUpToDate: "הכול מעודכן (גרסה {current}).",
+      updateStatusAvailable: "גרסה {latest} זמינה להורדה.",
+      updateStatusChecking: "בודק...",
+      updateStatusFailed: "לא הצלחנו לבדוק כרגע. נסו שוב מאוחר יותר.",
+      updateStatusOff: "הבדיקה האוטומטית כבויה.",
       updateBanner: "Extractify עודכן לגרסה {version}. ההגדרות שלך נשמרו.",
 
       secUiLangTitle: "שפת הממשק",
@@ -343,7 +367,7 @@
       faqQ5: "איך מעדכנים לגרסה חדשה?",
       faqA5: "חלצו את ה-ZIP החדש מעל התיקייה הקיימת (דריסה על הקבצים), ואחר-כך לחצו על סמל הרענון (↻) בכרטיס של Extractify ב-chrome://extensions. ההגדרות שלך נשמרות – אין צורך להסיר ולהתקין מחדש.",
       faqQ6: "האם משהו יוצא מהמחשב שלי?",
-      faqA6: "לא. ה-OCR רץ לגמרי אופליין בתוך הדפדפן – צילומי מסך וטקסט מזוהה אף פעם לא עולים לשום מקום. אין חשבון, אין שרת, אין מעקב.",
+      faqA6: "לא. ה-OCR רץ לגמרי אופליין בתוך הדפדפן – צילומי מסך וטקסט מזוהה אף פעם לא עולים לשום מקום. אין חשבון, אין שרת, אין מעקב. הפנייה היחידה לרשת היא בדיקת הגרסאות האופציונלית (ראו 'עדכונים' למעלה), שלא שולחת עליכם שום מידע ואפשר לכבות אותה.",
       faqQ7: "למה זה צריך גישה לכל אתר, והרשאה מוזרה בשם \"offscreen\"?",
       faqA7: "אתרים מסוימים מגדירים מדיניות אבטחה מחמירה שחוסמת את מנוע ה-OCR מלהתחיל ישירות בעמוד (הייתם רואים שגיאה כמו \"Failed to construct 'Worker'\"). הרשאת \"offscreen\" מאפשרת ל-Extractify להריץ את ה-OCR בעמוד נסתר משלו במקום זאת, חסין מהמדיניות של האתר – כך שהזיהוי ממשיך לעבוד בכל מקום. \"גישה לכל האתרים\" היא מה שמאפשר לכלי הצילום ולתיקון הזה לפעול בכל אתר שתבקרו בו, לא רשימה קבועה. ראו אבטחה ופרטיות למעלה למה כל הרשאה משמשת.",
       faqQ8: "למה זה העתיק משהו בלי שלחצתי על העתקה?",
@@ -353,7 +377,7 @@
 
       secAboutTitle: "אודות",
       aboutVersion: "גרסה {version}",
-      aboutPrivacy: "Extractify רץ 100% אופליין: צילומי מסך, טקסט מזוהה או נתוני שימוש אף פעם לא יוצאים מהמחשב שלך. בלי חשבון, בלי שרת, בלי מעקב.",
+      aboutPrivacy: "זיהוי הטקסט רץ 100% אופליין: צילומי מסך, טקסט מזוהה או נתוני שימוש אף פעם לא יוצאים מהמחשב שלך. בלי חשבון, בלי שרת, בלי מעקב. הפנייה היחידה לרשת היא בדיקת גרסאות אופציונלית מול GitHub, שאפשר לכבות תחת 'עדכונים'.",
 
       saveBtn: "שמירה",
       resetBtn: "איפוס לברירת מחדל",

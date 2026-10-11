@@ -5,6 +5,7 @@
 // interface language.
 
 importScripts("../shared/extractify-i18n.js");
+importScripts("../shared/update-check.js");
 
 const DEFAULT_SETTINGS = {
   uiLang: "en", // interface language: 'en' (default) | 'he'
@@ -33,9 +34,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   }
   updateActionTitle();
   createContextMenus();
+  ExtUpdate.check();
 });
 
-chrome.runtime.onStartup.addListener(() => createContextMenus());
+chrome.runtime.onStartup.addListener(() => {
+  createContextMenus();
+  ExtUpdate.check();
+});
 
 // Context menu items persist across service-worker sleep/wake, but not
 // reliably across every possible restart path — removeAll-then-create is
@@ -124,6 +129,12 @@ chrome.storage.onChanged.addListener((changes, area) => {
 
 updateActionTitle();
 
+// Optional "new version available" check (GitHub latest release, at most once
+// per 12h, can be switched off in Settings). Re-applies the toolbar badge from
+// the cached result every time the service worker wakes; never throws.
+ExtUpdate.applyBadge();
+ExtUpdate.check();
+
 // Chrome never allows script injection into chrome://, the Web Store, or the
 // extension gallery — there's no way around that. We can't show an in-page
 // message there either (no content script can run), so the best available
@@ -131,7 +142,7 @@ updateActionTitle();
 async function flashUnsupportedPageBadge() {
   await chrome.action.setBadgeBackgroundColor({ color: "#E0507A" });
   await chrome.action.setBadgeText({ text: "!" });
-  setTimeout(() => chrome.action.setBadgeText({ text: "" }), 1800);
+  setTimeout(() => ExtUpdate.applyBadge(), 1800); // restores the "NEW" update badge if one is pending, else clears
 }
 
 async function startCapture(tab) {
@@ -260,7 +271,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message?.type === "TABLIFY_OFFSCREEN_PROGRESS" && message.tabId) {
-    chrome.tabs.sendMessage(message.tabId, { type: "SNAPTABLE_PROGRESS", progress: message.progress });
+    chrome.tabs.sendMessage(message.tabId, { type: "SNAPTABLE_PROGRESS", progress: message.progress }).catch(() => {
+      /* tab was closed or navigated away mid-recognition - nothing to update */
+    });
     return false;
   }
 });

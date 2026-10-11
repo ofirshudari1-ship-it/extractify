@@ -1,6 +1,6 @@
 # Privacy Policy — Extractify
 
-_Last updated: 2026-09-15 · Version 1.11.0_
+_Last updated: 2026-10-12 · Version 1.14.0_
 
 ## English
 
@@ -19,9 +19,11 @@ other tab in the background.
 **Where that data goes: nowhere but your own device.** Recognition runs
 entirely on-device, inside a Tesseract.js neural-network OCR engine
 compiled to WebAssembly and bundled with the extension itself
-(`src/shared/`). Extractify makes **zero network requests** of its own —
-it has no server, no analytics, no crash reporting, no third-party SDK,
-and no AI API of any kind (not Claude, not OpenAI, not anything). The
+(`src/shared/`). The recognition itself makes **zero network requests** —
+Extractify has no server, no analytics, no crash reporting, no third-party
+SDK, and no AI API of any kind (not Claude, not OpenAI, not anything). The
+**only** network request the extension can make is the optional update
+check described below. The
 captured image and the recognized text exist only in memory for the
 duration of that one capture and are never written to disk, logged, or
 transmitted anywhere. Because no data is ever sent off-device, Google's
@@ -42,6 +44,20 @@ at any time. Either way, all of this is local to your device only and is
 **never** synced through your Google account, even if Chrome Sync is
 turned on for everything else. Uninstalling the extension removes this
 data along with it.
+
+**Update check (since v1.14.0, on by default, can be turned off).** Because
+Extractify is installed from a GitHub ZIP, Chrome cannot update it by
+itself. At most once every 12 hours the extension sends one HTTPS GET to
+`api.github.com/repos/ofirshudari1-ship-it/extractify/releases/latest` to
+read the number of the newest release, and shows a "new version available"
+notice (Settings page and toolbar badge) if it is newer than the installed
+one. The request carries no cookies, no referrer and no identifier, and
+nothing about you, your pages or your captures; GitHub sees an ordinary
+request from your IP address, as with any website. Nothing is downloaded or
+installed automatically - you choose whether to open the release page. The
+result (a version number and a timestamp) is kept in `chrome.storage.local`.
+Turn it off under Settings → Updates and the extension makes no network
+requests at all. No extra browser permission is needed for this.
 
 **Changes to this policy.** If a future version ever changes what data is
 collected or how it's handled, that change will be disclosed here and in
@@ -66,9 +82,10 @@ the Chrome Web Store); questions go to whoever gave you the ZIP file.
 
 **לאן הנתונים האלה הולכים: לשום מקום מלבד המחשב שלכם.** הזיהוי רץ
 לגמרי במכשיר, בתוך מנוע OCR מבוסס רשת נוירונים (Tesseract.js) שמקומפל
-ל-WebAssembly וארוז בתוך התוסף עצמו (`src/shared/`). ל-Extractify
-**אפס בקשות רשת** משל עצמו — אין שרת, אין אנליטיקס, אין דיווח קריסות,
+ל-WebAssembly וארוז בתוך התוסף עצמו (`src/shared/`). בזיהוי עצמו
+**אין בקשות רשת בכלל** — ל-Extractify אין שרת, אין אנליטיקס, אין דיווח קריסות,
 אין SDK של צד שלישי, ואין שום API של AI (לא Claude, לא OpenAI, שום דבר).
+הבקשה היחידה שהתוסף יכול לשלוח היא בדיקת העדכונים האופציונלית שמתוארת בהמשך.
 התמונה שצולמה והטקסט שזוהה קיימים רק בזיכרון למשך הצילום הבודד ההוא,
 ולעולם לא נכתבים לדיסק, נרשמים בלוג, או נשלחים לשום מקום. מכיוון ששום
 נתון לעולם לא יוצא מהמכשיר, דרישות הגילוי של גוגל ל"שימוש מוגבל"
@@ -85,6 +102,17 @@ Extractify גם שומר את *המיקום והגודל* של המלבן האח
 התנהגות בכל רגע. בכל מקרה, כל זה מקומי למכשיר שלכם בלבד, ו**לעולם לא**
 מסתנכרן דרך חשבון Google, גם אם Chrome Sync דלוק לכל השאר. הסרת התוסף
 מוחקת את הנתונים האלה יחד איתו.
+
+**בדיקת עדכונים (מגרסה 1.14.0, פעילה כברירת מחדל, אפשר לכבות).** מכיוון ש-Extractify
+מותקן מקובץ ZIP של GitHub, כרום לא יכול לעדכן אותו לבד. לכל היותר פעם ב-12 שעות
+התוסף שולח בקשת HTTPS GET אחת אל
+`api.github.com/repos/ofirshudari1-ship-it/extractify/releases/latest` כדי לקרוא את
+מספר הגרסה האחרונה, ומציג הודעת "יצאה גרסה חדשה" (בעמוד ההגדרות ובתג על סמל התוסף)
+אם היא חדשה יותר מזו המותקנת. הבקשה לא כוללת עוגיות, referrer או מזהה, ושום מידע
+עליכם, על העמודים שלכם או על הצילומים; GitHub רואה בקשה רגילה מכתובת ה-IP שלכם,
+כמו בכל אתר. שום דבר לא יורד ולא מותקן אוטומטית - אתם בוחרים אם לפתוח את עמוד
+השחרור. התוצאה (מספר גרסה וזמן הבדיקה) נשמרת ב-`chrome.storage.local`. כיבוי תחת
+הגדרות ← עדכונים, והתוסף לא פונה לרשת בכלל. אין צורך בהרשאה נוספת בדפדפן.
 
 **שינויים במדיניות הזו.** אם גרסה עתידית אי-פעם תשנה אילו נתונים
 נאספים או איך הם מטופלים, זה יגולה כאן וב-`CHANGELOG.md` **לפני** שהעדכון

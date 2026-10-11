@@ -95,6 +95,9 @@ h1 { font-size: 19px; margin: 0; }
    got to hide it even when there was no update to announce. */
 .update-banner[hidden] { display: none; }
 
+.update-banner a { margin-inline-start: auto; font-weight: 600; }
+.update-banner a + button { margin-inline-start: 0; }
+
 .update-banner button {
   margin-inline-start: auto;
   background: transparent;

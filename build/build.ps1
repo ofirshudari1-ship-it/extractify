@@ -15,7 +15,7 @@
     4. Verify English/Hebrew translation key parity in extractify-i18n.js.
     5. Remove any stale Extractify-v*.zip in the project root.
     6. Rebuild the ZIP from exactly what Chrome needs to load the extension
-       (manifest.json, src/, assets/, _locales/) - nothing else.
+       (manifest.json, src/, assets/icons/, _locales/) - nothing else.
     7. Print a summary and exit non-zero on any failure, so this is safe
        to wire into a CI step later if that's ever needed.
 
@@ -47,7 +47,8 @@ try {
         "src/options/options.js",
         "src/welcome/welcome.js",
         "src/shared/extractify-i18n.js",
-        "src/shared/snaptable-ocr.js"
+        "src/shared/snaptable-ocr.js",
+        "src/shared/update-check.js"
     )
     foreach ($f in $jsFiles) {
         node --check $f
@@ -74,6 +75,13 @@ console.log(en.length + ' keys, en/he match');
     if ($LASTEXITCODE -ne 0) { throw "i18n key parity check failed: $parityCheck" }
     Write-Host "Translation keys: $parityCheck" -ForegroundColor Green
 
+    # 4b. Unit tests that need no browser (update-check logic).
+    foreach ($t in (Get-ChildItem -Path "tests" -Filter "*.test.js" -ErrorAction SilentlyContinue)) {
+        $out = node $t.FullName 2>&1
+        if ($LASTEXITCODE -ne 0) { throw "$($t.Name) failed: $out" }
+        Write-Host "$($t.Name): $out" -ForegroundColor Green
+    }
+
     # 5. Clean up any stale versioned ZIP left in the root.
     Get-ChildItem -Path "." -Filter "Extractify-v*.zip" | Remove-Item -Force
 
@@ -84,7 +92,10 @@ console.log(en.length + ' keys, en/he match');
     try {
         Copy-Item "manifest.json" $stagingDir
         Copy-Item "src" (Join-Path $stagingDir "src") -Recurse
-        Copy-Item "assets" (Join-Path $stagingDir "assets") -Recurse
+        # Only the icons ship. assets/marketing and assets/onboarding are marketing
+        # sources used by the landing page, never loaded by the extension.
+        New-Item -ItemType Directory -Path (Join-Path $stagingDir "assets") | Out-Null
+        Copy-Item "assets/icons" (Join-Path $stagingDir "assets/icons") -Recurse
         Copy-Item "_locales" (Join-Path $stagingDir "_locales") -Recurse
         Compress-Archive -Path "$stagingDir/*" -DestinationPath $zipName -Force
     } finally {

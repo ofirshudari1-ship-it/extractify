@@ -8,7 +8,7 @@ Extractify lets you drag-select any part of your screen — a table on a dashboa
 
 ## Install
 
-Extractify is not published on the Chrome Web Store, so installation is manual and there is no automatic update:
+Extractify is not published on the Chrome Web Store, so installation is manual and Chrome cannot update it by itself (from v1.14.0 it tells you when a newer release exists - see Updates below):
 
 1. Download the latest `.zip` from the [Releases page](https://github.com/ofirshudari1-ship-it/extractify/releases/latest).
 2. Extract the zip to a folder you'll keep on your computer (don't delete it afterwards — Chrome loads the extension's files from there every time).
@@ -17,6 +17,14 @@ Extractify is not published on the Chrome Web Store, so installation is manual a
 5. Click **Load unpacked** and select the folder you extracted.
 
 Because this isn't a Chrome Web Store install, Chrome will never update it automatically. To get a new version later, download the new release zip, extract it over the same folder (or a fresh one), and click the reload icon on Extractify's card at `chrome://extensions` — or repeat "Load unpacked" for a new folder.
+
+### Updates
+
+From v1.14.0 Extractify checks its own GitHub repository for a newer release and, if there is one, shows a **new version available - download** notice at the top of the Settings page and a **NEW** badge on the toolbar icon. It does not download or install anything by itself.
+
+- At most one check every 12 hours (one HTTPS request to `api.github.com`, this repo only; the result is cached in `chrome.storage.local`).
+- On by default. Turn it off under **Settings > Updates** - then the extension makes no network requests at all. **Check now** forces a check.
+- No extra browser permission is needed (the extension already holds `<all_urls>`; the GitHub API allows cross-origin reads).
 
 ## Key features
 
@@ -31,6 +39,6 @@ Because this isn't a Chrome Web Store install, Chrome will never update it autom
 
 ## Privacy
 
-Extractify runs its OCR engine (Tesseract.js, a neural-network OCR engine compiled to WebAssembly) entirely on your device. It makes **zero network requests** — no server, no analytics, no crash reporting, no third-party SDK, and no AI API of any kind. The captured image and recognized text exist only in memory for the duration of a single capture and are never written to disk, logged, or transmitted anywhere.
+Extractify runs its OCR engine (Tesseract.js, a neural-network OCR engine compiled to WebAssembly) entirely on your device. Recognition makes **zero network requests** (the only request the extension can make is the optional, switch-off-able version check above) — no server, no analytics, no crash reporting, no third-party SDK, and no AI API of any kind. The captured image and recognized text exist only in memory for the duration of a single capture and are never written to disk, logged, or transmitted anywhere.
 
 The only data stored locally (via `chrome.storage.local`, never synced through your Google account) is your own preferences — interface language, OCR languages, column sensitivity — plus, if you leave the optional "remember capture area per website" setting on, the position and size (not content) of your last capture on each site. Everything can be cleared from Settings at any time, and uninstalling the extension removes it all.

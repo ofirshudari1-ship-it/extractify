@@ -57,6 +57,8 @@ function applyTranslations() {
     btn.classList.toggle("is-active", btn.dataset.lang === STATE.uiLang);
   });
 
+  renderUpdateUi();
+
   if (!updateBanner.hidden && STATE.pendingUpdateVersion) {
     updateBannerText.textContent = T("updateBanner", { version: STATE.pendingUpdateVersion });
   }
@@ -156,6 +158,52 @@ shortcutsLink.addEventListener("click", (e) => {
   e.preventDefault();
   chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
 });
+
+// ---- "New version available" notice (GitHub latest release; see src/shared/update-check.js) ----
+const updateAvail = document.getElementById("update-available");
+const updateAvailText = document.getElementById("update-available-text");
+const updateAvailLink = document.getElementById("update-available-link");
+const updateAvailDismiss = document.getElementById("update-available-dismiss");
+const updateEnabledInput = document.getElementById("update-check-enabled");
+const updateCheckNowBtn = document.getElementById("update-check-now");
+const updateStatusEl = document.getElementById("update-status");
+
+async function renderUpdateUi() {
+  const v = await ExtUpdate.getView();
+  updateEnabledInput.checked = v.enabled;
+  updateCheckNowBtn.disabled = !v.enabled;
+  updateAvail.hidden = !v.showNotice;
+  if (v.showNotice) {
+    updateAvailText.textContent = T("updateAvailableText", { latest: v.latest, current: v.current });
+    updateAvailLink.textContent = T("updateDownload", { latest: v.latest });
+    updateAvailLink.href = v.url;
+  }
+  let status = "";
+  if (!v.enabled) status = T("updateStatusOff");
+  else if (v.available) status = T("updateStatusAvailable", { latest: v.latest });
+  else if (!v.checkedAt) status = "";
+  else if (!v.ok) status = T("updateStatusFailed");
+  else status = T("updateStatusUpToDate", { current: v.current });
+  updateStatusEl.textContent = status;
+}
+
+updateEnabledInput.addEventListener("change", async () => {
+  await ExtUpdate.setEnabled(updateEnabledInput.checked);
+  renderUpdateUi();
+});
+updateCheckNowBtn.addEventListener("click", async () => {
+  updateCheckNowBtn.disabled = true;
+  updateStatusEl.textContent = T("updateStatusChecking");
+  await ExtUpdate.check({ force: true });
+  renderUpdateUi();
+});
+updateAvailDismiss.addEventListener("click", async () => {
+  await ExtUpdate.dismiss();
+  renderUpdateUi();
+});
+// Show the cached result right away; the network check is skipped if it ran in the last 12h.
+renderUpdateUi();
+ExtUpdate.check().then(renderUpdateUi);
 
 // ---- One-time "just updated" banner ----
 // background.js records this in chrome.storage.local (reason: 'update' in

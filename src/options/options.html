@@ -24,6 +24,12 @@
       <button type="button" id="update-banner-close" aria-label="Dismiss">✕</button>
     </div>
 
+    <div id="update-available" class="update-banner" hidden>
+      <span id="update-available-text"></span>
+      <a id="update-available-link" class="link-btn" href="#" target="_blank" rel="noopener"></a>
+      <button type="button" id="update-available-dismiss" data-i18n="updateDismiss">Not now</button>
+    </div>
+
     <section class="card">
       <h2 data-i18n="secOcrLangTitle">OCR Recognition Languages</h2>
       <p class="hint" data-i18n="secOcrLangHint">Pick the languages that appear in the areas you'll capture.</p>
@@ -170,6 +176,17 @@
       </div>
     </section>
 
+    <section class="card" id="update-card">
+      <h2 data-i18n="secUpdateTitle">Updates</h2>
+      <p class="hint" id="update-status" role="status" aria-live="polite"></p>
+      <label class="checkbox-row">
+        <input type="checkbox" id="update-check-enabled" />
+        <span data-i18n="updateCheckLabel">Check for new versions automatically</span>
+      </label>
+      <p class="hint" data-i18n="updateCheckHint">...</p>
+      <button type="button" id="update-check-now" class="secondary-btn" data-i18n="updateCheckNow">Check now</button>
+    </section>
+
     <section class="card">
       <h2 data-i18n="secAboutTitle">About</h2>
       <p class="hint" id="about-version">Version …</p>
@@ -186,6 +203,7 @@
   <script src="../shared/extractify-i18n.js"></script>
   <script src="../shared/tesseract.min.js"></script>
   <script src="../shared/snaptable-ocr.js"></script>
+  <script src="../shared/update-check.js"></script>
   <script src="options.js"></script>
 </body>
 </html>
