@@ -1,6 +1,6 @@
 # Privacy Policy — Extractify
 
-_Last updated: 2026-10-12 · Version 1.14.0_
+_Last updated: 2026-10-17 · Version 1.15.0_
 
 ## English
 
