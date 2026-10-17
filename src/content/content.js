@@ -664,6 +664,24 @@ if (window.__snaptableActive) {
   // table would be meaningless, so it's wrapped as a fenced code block
   // instead - still valid, still useful, never garbled output.
   function tsvToMarkdown(tsv) {
+    return tsvToMarkdownImpl(tsv);
+  }
+
+  // JSON for Make/APIs: first row = keys (deduped, blanks -> col_N), rest = objects.
+  function tsvToJson(tsv) {
+    const rows = tsv.split("\n").filter((l) => l.length > 0).map((l) => l.split("\t"));
+    if (rows.length < 2) return JSON.stringify(rows.flat(), null, 2);
+    const seen = {};
+    const keys = rows[0].map((h, i) => {
+      const base = String(h).trim() || "col_" + (i + 1);
+      seen[base] = (seen[base] || 0) + 1;
+      return seen[base] > 1 ? base + "_" + seen[base] : base;
+    });
+    const out = rows.slice(1).map((r) => Object.fromEntries(keys.map((k, i) => [k, (r[i] ?? "").trim()])));
+    return JSON.stringify(out, null, 2);
+  }
+
+  function tsvToMarkdownImpl(tsv) {
     const lines = tsv.split("\n").filter((l) => l.length > 0);
     if (!lines.some((l) => l.includes("\t"))) {
       return "```\n" + tsv + "\n```";
@@ -793,6 +811,7 @@ if (window.__snaptableActive) {
         <button class="snaptable-btn snaptable-btn-primary" data-action="copy-table">${T("copyTable")}</button>
         <button class="snaptable-btn snaptable-btn-secondary" data-action="copy-text">${T("copyText")}</button>
         <button class="snaptable-btn snaptable-btn-secondary" data-action="copy-markdown">${T("copyMarkdown")}</button>
+        <button class="snaptable-btn snaptable-btn-secondary" data-action="copy-json" title="${T("copyJsonHint")}">${T("copyJson")}</button>
         <button class="snaptable-btn snaptable-btn-secondary" data-action="download-csv">${T("downloadCsv")}</button>
         <button class="snaptable-btn snaptable-btn-secondary snaptable-footer-spacer" data-action="recapture" title="${T("recaptureHint")}" ${STATE.lastRect ? "" : "hidden"}>${T("recaptureBtn")}</button>
         <button class="snaptable-btn snaptable-btn-secondary" data-action="add-capture" title="${T("addCaptureHint")}">${T("addCapture")}</button>
@@ -821,6 +840,7 @@ if (window.__snaptableActive) {
     const copyTableBtn = panel.querySelector('[data-action="copy-table"]');
     const copyTextBtn = panel.querySelector('[data-action="copy-text"]');
     const copyMarkdownBtn = panel.querySelector('[data-action="copy-markdown"]');
+    const copyJsonBtn = panel.querySelector('[data-action="copy-json"]');
     const downloadCsvBtn = panel.querySelector('[data-action="download-csv"]');
     const recaptureBtn = panel.querySelector('[data-action="recapture"]');
     const addCaptureBtn = panel.querySelector('[data-action="add-capture"]');
@@ -968,6 +988,7 @@ if (window.__snaptableActive) {
       copyToClipboard(currentTsv().replace(/\t/g, " "));
     });
     copyMarkdownBtn.addEventListener("click", () => copyToClipboard(tsvToMarkdown(currentTsv())));
+    copyJsonBtn.addEventListener("click", () => copyToClipboard(tsvToJson(currentTsv())));
     downloadCsvBtn.addEventListener("click", () => downloadCsv(currentTsv()));
 
     makeDraggable(panel, header);
@@ -1001,6 +1022,7 @@ if (window.__snaptableActive) {
         copyTableBtn.disabled = busy;
         copyTextBtn.disabled = busy;
         copyMarkdownBtn.disabled = busy;
+        copyJsonBtn.disabled = busy;
         downloadCsvBtn.disabled = busy;
         // Also blocks starting an overlapping capture while one is still
         // being recognized - previously possible (a pre-existing gap, not
